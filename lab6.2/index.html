@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" href="index.css">
+  <script type="module" src="index.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Pet Manager</h1>
+    <button id="add-pet-btn" class="add-pet-btn">Add Pet</button>
+    <div class="pet-table">
+      <div class="pet-header">
+        <div>Name</div>
+        <div>Type</div>
+        <div>Age</div>
+        <div>Actions</div>
+      </div>
+      <div id="pet-list"></div>
+    </div>
+  </div>
+
+  <div id="modal" class="hidden">
+    <form id="pet-form">
+      <label for="pet-name">Name:</label>
+      <input type="text" id="pet-name" required>
+      
+      <label for="pet-age">Age:</label>
+      <input type="number" id="pet-age" required>
+      
+      <div id="pet-type-wrapper">
+        <label for="pet-type">Type:</label>
+        <input type="text" id="pet-type" required>
+      </div>
+
+      <button type="submit">Save</button>
+      <button type="button" id="close-modal">Cancel</button>
+    </form>
+  </div>
+
+</body>
+</html>

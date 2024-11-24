@@ -1,0 +1,110 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+}
+  
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+  
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+  
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+  
+button:hover {
+  background-color: #0056b3;
+}
+  
+.pet-table {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+  
+.pet-header,
+.pet-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+  
+.pet-header {
+  font-weight: bold;
+  background: #007bff;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+}
+  
+.pet-row {
+  background: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+  
+.pet-row button {
+    margin-left: 5px;
+}
+
+.add-pet-btn {
+  margin-bottom: 5px;
+}
+  
+.hidden {
+    display: none;
+}
+  
+#modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+  
+#modal label {
+  display: block;
+  margin-bottom: 5px;
+}
+  
+#modal input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+  
+#modal button {
+  margin-right: 10px;
+}
+  
+#modal.hidden {
+  display: none;
+}
+  
+  
