@@ -1,8 +1,14 @@
 const apiBase = 'http://test3.is.op.edu.ua/api/Pet';
 
 async function fetchPets() {
-  const pets = await (await fetch(apiBase)).json();
-  displayPets(pets);
+  try {
+    const response = await fetch(apiBase);
+    if (!response.ok) throw new Error(`Помилка завантаження: ${response.status}`);
+    const pets = await response.json();
+    displayPets(pets);
+  } catch (error) {
+    console.error('Помилка при отриманні списка петів:', error);
+  }
 }
 
 function displayPets(pets) {
@@ -48,30 +54,38 @@ function openModal(pet = null) {
   const petForm = document.getElementById('pet-form');
   const nameInput = document.getElementById('pet-name');
   const ageInput = document.getElementById('pet-age');
-
-  nameInput.value = pet ? pet.name : '';
-  ageInput.value = pet ? pet.age : '';
-
   const typeWrapper = document.getElementById('pet-type-wrapper');
-  if (!pet && !typeWrapper) {
-    const newTypeWrapper = document.createElement('div');
-    newTypeWrapper.id = 'pet-type-wrapper';
-    newTypeWrapper.innerHTML = `
-      <label for="pet-type">Type:</label>
-      <input type="text" id="pet-type">
-    `;
-    petForm.insertBefore(newTypeWrapper, petForm.querySelector('button[type="submit"]'));
+
+  if (pet) {
+    nameInput.value = pet.name;
+    ageInput.value = pet.age;
+
+    if (typeWrapper) typeWrapper.remove();
+
+    petForm.onsubmit = (e) => {
+      e.preventDefault();
+      updatePet(pet.id, nameInput.value.trim(), parseInt(ageInput.value, 10));
+    };
+  } else {
+    nameInput.value = '';
+    ageInput.value = '';
+
+    if (!typeWrapper) {
+      const newTypeWrapper = document.createElement('div');
+      newTypeWrapper.id = 'pet-type-wrapper';
+      newTypeWrapper.innerHTML = `
+        <label for="pet-type">Type:</label>
+        <input type="text" id="pet-type" required>
+      `;
+      petForm.insertBefore(newTypeWrapper, petForm.querySelector('button[type="submit"]'));
+    }
+
+    petForm.onsubmit = (e) => {
+      e.preventDefault();
+      const typeInput = document.getElementById('pet-type');
+      createPet(nameInput.value.trim(), parseInt(ageInput.value, 10), typeInput.value.trim());
+    };
   }
-
-  if (typeWrapper && pet) typeWrapper.remove();
-
-  petForm.onsubmit = (e) => {
-    e.preventDefault();
-    const typeInput = document.getElementById('pet-type')?.value.trim();
-    pet
-      ? updatePet(pet.id, nameInput.value.trim(), parseInt(ageInput.value, 10))
-      : createPet(nameInput.value.trim(), parseInt(ageInput.value, 10), typeInput);
-  };
 
   modal.classList.remove('hidden');
 }
@@ -81,29 +95,51 @@ function closeModal() {
 }
 
 async function createPet(name, age, type) {
-  await fetch(apiBase, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, age, type }),
-  });
-  closeModal();
-  fetchPets();
+  try {
+    const response = await fetch(apiBase, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, age, type }),
+    });
+    if (!response.ok) throw new Error(`Помилка створення: ${response.status}`);
+    console.log('Пета додано');
+    closeModal();
+    fetchPets();
+  } catch (error) {
+    console.error('Помилка при додаванні пета:', error);
+    alert('Не вдалося додати пета');
+  }
 }
 
 async function updatePet(id, name, age) {
-  await fetch(`${apiBase}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, age }),
-  });
-  closeModal();
-  fetchPets();
+  try {
+    const response = await fetch(`${apiBase}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, age }),
+    });
+    if (!response.ok) throw new Error(`Помилка оновлення: ${response.status}`);
+    console.log('Пет оновлений');
+    closeModal();
+    fetchPets();
+  } catch (error) {
+    console.error('Помилка при оновленні пета:', error);
+    alert('Не вдалося оновити дані пета ');
+  }
 }
 
 async function deletePet(id) {
-  await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
-  fetchPets();
+  try {
+    const response = await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error(`Помилка видалення: ${response.status}`);
+    console.log('Пет видалений');
+    fetchPets();
+  } catch (error) {
+    console.error('помилка при видаленні пета:', error);
+    alert('Не вдалося видалити пета');
+  }
 }
+
 
 document.getElementById('add-pet-btn').onclick = () => openModal();
 document.getElementById('close-modal').onclick = closeModal;
