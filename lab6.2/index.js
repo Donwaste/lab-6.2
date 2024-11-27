@@ -101,13 +101,20 @@ async function createPet(name, age, type) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, age, type }),
     });
-    if (!response.ok) throw new Error(`Помилка створення: ${response.status}`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.errors) {
+        handleErrors(errorData.errors);
+      }
+      throw new Error(`Помилка створення: ${response.status}`);
+    }
+
     console.log('Пета додано');
     closeModal();
     fetchPets();
   } catch (error) {
     console.error('Помилка при додаванні пета:', error);
-    alert('Не вдалося додати пета');
   }
 }
 
@@ -118,16 +125,30 @@ async function updatePet(id, name, age) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, age }),
     });
-    if (!response.ok) throw new Error(`Помилка оновлення: ${response.status}`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.errors) {
+        handleErrors(errorData.errors); 
+      }
+      throw new Error(`Помилка оновлення: ${response.status}`);
+    }
+
     console.log('Пет оновлений');
     closeModal();
     fetchPets();
   } catch (error) {
     console.error('Помилка при оновленні пета:', error);
-    alert('Не вдалося оновити дані пета ');
   }
 }
 
+function handleErrors(errors) {
+  const errorMessages = [];
+  for (const [field, messages] of Object.entries(errors)) {
+    messages.forEach((msg) => errorMessages.push(`${field}: ${msg}`));
+  }
+  alert(`Помилки: \n${errorMessages.join('\n')}`);
+}
 async function deletePet(id) {
   try {
     const response = await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
